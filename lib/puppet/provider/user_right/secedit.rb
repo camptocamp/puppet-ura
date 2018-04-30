@@ -37,7 +37,7 @@ Puppet::Type.type(:user_right).provide(:secedit) do
     end
 
     def in_file_path(right)
-        File.join(Puppet[:vardir], 'secedit_export', "#{right}.txt")
+        File.join(Puppet[:vardir], 'secedit_export', "#{right}.txt").gsub('/', '\\')
     end
 
     def write_export(right, sid)
@@ -79,7 +79,7 @@ Revision=1
     end
 
     def self.instances
-        out_file_path = File.join(Puppet[:vardir], 'secedit_import.txt')
+        out_file_path = File.join(Puppet[:vardir], 'secedit_import.txt').gsub('/', '\\')
         # Once the file exists in UTF-8, secedit will also use UTF-8
         File.open(out_file_path, 'w') { |f| f.write('# We want UTF-8') }
         secedit('/export', '/cfg', out_file_path, '/areas', 'user_rights')
