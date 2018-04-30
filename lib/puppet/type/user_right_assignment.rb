@@ -3,6 +3,10 @@ Puppet::Type.newtype(:user_right_assignment) do
     Append users to a user_right resource.
     EOT
 
+    newparam(:name, :namevar) do
+        desc 'The mandatory namevar'
+    end
+
     newparam(:right) do
         desc 'The right to append users to'
     end
