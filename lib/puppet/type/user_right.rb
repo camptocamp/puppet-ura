@@ -15,5 +15,9 @@ Puppet::Type.newtype(:user_right) do
 
     newproperty(:sid, :array_matching => :all) do
         desc 'List of SIDs to allow for this right'
+
+        def insync?(current)
+            provider.sid_in_sync?(current, @should)
+        end
     end
 end
