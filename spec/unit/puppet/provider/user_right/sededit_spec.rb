@@ -32,6 +32,7 @@ describe Puppet::Type.type(:user_right).provider(:secedit) do
         File.dirname(__FILE__), "../../../../fixtures/unit/puppet/provider/user_right/secedit/full.txt"), '=')
 
         expect(Puppet).to receive(:[]).once.with(:vardir).and_return('C:\ProgramData\PuppetLabs\Puppet\var')
+        File.expects(:open).once.with(out_file, 'w')
         provider.class.expects(:secedit).once.with('/export', '/cfg', out_file, '/areas', 'user_rights')
         Puppet::Util::IniFile.expects(:new).once.with(out_file, '=')
             .returns(ini_stub)
