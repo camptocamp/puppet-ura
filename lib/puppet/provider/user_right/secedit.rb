@@ -64,12 +64,12 @@ Revision=1
     end
 
     def name_to_sid(users)
-        users.map { |user| Puppet::Util::Windows::SID.name_to_sid(user) }
+        users.map { |user| '*' + Puppet::Util::Windows::SID.name_to_sid(user) }
     end
 
     def sid_in_sync?(current, should)
         return false unless current
-        current_sids = name_to_sid(current)
+        current_sids = current
         specified_sids = name_to_sid(should)
         (specified_sids & current_sids) == specified_sids
     end
@@ -94,9 +94,7 @@ Revision=1
             new({
                 :name   => k,
                 :ensure => :present,
-                :sid    => v.split(',').map { |sid|
-                    Puppet::Util::Windows::SID.sid_to_name(sid.sub('*', ''))
-                },
+                :sid    => v.split(','),
             })
         }
     end
