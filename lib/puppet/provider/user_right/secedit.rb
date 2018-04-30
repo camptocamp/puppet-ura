@@ -44,7 +44,7 @@ Puppet::Type.type(:user_right).provide(:secedit) do
         dir = File.join(Puppet[:vardir], 'secedit_export')
         Dir.mkdir(dir) unless Dir.exist?(dir)
 
-        File.open(in_file_path(right), 'rw') do |f|
+        File.open(in_file_path(right), 'w') do |f|
           f.write <<-EOF
 [Unicode]
 Unicode=yes
