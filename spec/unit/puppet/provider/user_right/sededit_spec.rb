@@ -32,29 +32,27 @@ describe Puppet::Type.type(:user_right).provider(:secedit) do
         File.dirname(__FILE__), "../../../../fixtures/unit/puppet/provider/user_right/secedit/full.txt"), '=')
 
         expect(Puppet).to receive(:[]).once.with(:vardir).and_return('C:\ProgramData\PuppetLabs\Puppet\var')
-        File.expects(:open).once.with(out_file, 'w')
-        provider.class.expects(:secedit).once.with('/export', '/cfg', out_file, '/areas', 'user_rights')
-        Puppet::Util::IniFile.expects(:new).once.with(out_file, '=')
-            .returns(ini_stub)
+        expect(File).to receive(:open).once.with(out_file, 'w')
+        expect(provider.class).to receive(:secedit).with('/export', '/cfg', out_file, '/areas', 'user_rights')
+        expect(Puppet::Util::IniFile).to receive(:new).once.with(out_file, '=')
+            .and_return(ini_stub)
     end
 
     context 'when listing instances' do
-        context 'when the gpo file exists' do
-            it 'should list instances' do
-                stub_secedit_export
-                instances = provider.class.instances.map do |i| {
-                    :name   => i.get(:name),
-                    :ensure => i.get(:ensure),
-                    :sid    => i.get(:sid),
-                }
-                end
-                expect(instances.size).to eq(32)
-                expect(instances[0]).to eq({
-                    :name   => 'SeNetworkLogonRight',
-                    :ensure => :present,
-                    :sid    => ['*S-1-5-11', '*S-1-5-32-544'],
-                })
+        it 'should list instances' do
+            stub_secedit_export
+            instances = provider.class.instances.map do |i| {
+                :name   => i.get(:name),
+                :ensure => i.get(:ensure),
+                :sid    => i.get(:sid),
+            }
             end
+            expect(instances.size).to eq(32)
+            expect(instances[0]).to eq({
+                :name   => 'SeNetworkLogonRight',
+                :ensure => :present,
+                :sid    => ['*S-1-5-11', '*S-1-5-32-544'],
+            })
         end
     end
 end
