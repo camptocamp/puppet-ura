@@ -23,9 +23,9 @@ Puppet::Type.type(:user_right).provide(:secedit) do
     def self.prefetch(resources)
         instances.each do |right|
             resources.select { |title, res|
-                # select here
+                res[:name].downcase == right.get(:name).downcase
             }.map { |name, res|
-                res.provider = :secedit
+                res.provider = right
             }
         end
     end
