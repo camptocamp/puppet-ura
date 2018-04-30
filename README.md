@@ -10,13 +10,37 @@ User Rights Assignments
 ## Usage
 
 ```puppet
+user_right { 'seincreasequatoprivilege':
+  ensure => present,
+  sid    => ['CORP\domain', 'CORP\entadmin'],
+}
+```
+
+
+## Split 
+
+Add users to right from different contexts:
+
+```puppet
+user_right { 'seincreasequatoprivilege':
+  ensure => present,
+}
+
+user_right_assignment { 'seincreasequatoprivilege for admins':
+  right  => 'seincreasequatoprivilege',
+  sid    => ['CORP\domain', 'CORP\entadmin'],
+}
+
+user_right_assignment { 'another right':
+  right  => 'seincreasequatoprivilege',
+  sid    => ['CORP\domain', 'CORP\entadmin'],
+}
 ```
 
 ## Ensure absence
 
 ```puppet
+user_right { 'seincreasequatoprivilege':
+  ensure => absent,
+}
 ```
-
-```puppet
-```
-
