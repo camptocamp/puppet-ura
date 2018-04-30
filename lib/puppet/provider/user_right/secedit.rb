@@ -14,12 +14,12 @@ Puppet::Type.type(:user_right).provide(:secedit) do
     end
 
     def create
-        write_export(@parameters[:name], @parameters[:sid])
+        write_export(@resource[:name], @resource[:sid])
         @property_hash[:ensure] = :present
     end
 
     def destroy
-        write_export(@parameters[:name], [])
+        write_export(@resource[:name], [])
         @property_hash[:ensure] = :absent
     end
 
@@ -28,7 +28,7 @@ Puppet::Type.type(:user_right).provide(:secedit) do
     end
 
     def sid=(value)
-        write_export(@parameters[:name], value)
+        write_export(@resource[:name], value)
         @property_hash[:sid] = value
     end
 
@@ -54,7 +54,7 @@ Revision=1
     end
 
     def flush
-        secedit('/configure', '/db', 'secedit.sdb', '/cfg', in_file_path(@parameters[:name]))
+        secedit('/configure', '/db', 'secedit.sdb', '/cfg', in_file_path(@resource[:name]))
     end
 
     def sid_in_sync?(current, should)
