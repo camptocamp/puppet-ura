@@ -64,7 +64,7 @@ Revision=1
     end
 
     def name_to_sid(users)
-        users.map { |user| Puppet::Util::Windows::SID.name_to_sid(user) }
+        users.map { |user| '*' + Puppet::Util::Windows::SID.name_to_sid(user) }
     end
 
     def sid_in_sync?(current, should)
