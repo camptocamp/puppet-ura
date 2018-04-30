@@ -24,7 +24,7 @@ describe Puppet::Type.type(:user_right).provider(:secedit) do
     end
 
     let(:out_file) do
-        File.join(vardir, '/secedit_import.txt')
+        File.join(vardir, '/secedit_import.txt').gsub('/', '\\')
     end
 
     def stub_secedit_export
