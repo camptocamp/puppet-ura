@@ -1,7 +1,11 @@
 require 'puppet/util/windows'
-#require File.expand_path('../../../util/ini_file', __FILE__)
-# See how to make this work properly...
-require File.expand_path('../../../../../spec/fixtures/modules/inifile/lib/puppet/util/ini_file', __FILE__)
+
+begin
+  require File.expand_path('../../../util/ini_file', __FILE__)
+rescue
+  # in case we're not in libdir
+  require File.expand_path('../../../../../spec/fixtures/modules/inifile/lib/puppet/util/ini_file', __FILE__)
+end
 
 Puppet::Type.type(:user_right).provide(:secedit) do
     defaultfor :osfamily => :windows
