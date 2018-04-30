@@ -40,9 +40,11 @@ Puppet::Type.type(:user_right).provide(:secedit) do
         File.join(Puppet[:vardir], 'secedit_export', "#{right}.txt").gsub('/', '\\')
     end
 
-    def write_export(right, sid)
+    def write_export(right, value)
         dir = File.join(Puppet[:vardir], 'secedit_export')
         Dir.mkdir(dir) unless Dir.exist?(dir)
+
+        sid = name_to_sid(value)
 
         File.open(in_file_path(right), 'w') do |f|
           f.write <<-EOF
@@ -61,10 +63,14 @@ Revision=1
         secedit('/configure', '/db', 'secedit.sdb', '/cfg', in_file_path(@resource[:name]))
     end
 
+    def name_to_sid(users)
+        users.map { |user| Puppet::Util::Windows::SID.name_to_sid(user) }
+    end
+
     def sid_in_sync?(current, should)
         return false unless current
         current_sids = current
-        specified_sids = should.map { |user| Puppet::Util::Windows::SID.name_to_sid(user) }
+        specified_sids = name_to_sid(should)
         (specified_sids & current_sids) == specified_sids
     end
 
