@@ -59,13 +59,8 @@ Revision=1
 
     def sid_in_sync?(current, should)
         return false unless current
-
-        current_users = Puppet::Util::Windows::ADSI::Group.name_sid_hash(current)
-        specified_users = Puppet::Util::Windows::ADSI::Group.name_sid_hash(should)
-
-        current_sids = current_users.keys.to_a
-        specified_sids = specified_users.keys.to_a
-
+        current_sids = current
+        specified_sids = should.map { |user| Puppet::Util::Windows::SID.name_to_sid(user) }
         (specified_sids & current_sids) == specified_sids
     end
 
@@ -82,7 +77,7 @@ Revision=1
     def self.instances
         out_file_path = File.join(Puppet[:vardir], 'secedit_import.txt')
         # Once the file exists in UTF-8, secedit will also use UTF-8
-        File.open(out_file_path, 'w') { |f| f.write('# Hello, windows') } unless File.file?(out_file_path)
+        File.open(out_file_path, 'w') { |f| f.write('# We want UTF-8') } unless File.file?(out_file_path)
         secedit('/export', '/cfg', out_file_path, '/areas', 'user_rights')
         ini = Puppet::Util::IniFile.new(out_file_path, '=')
         ini.get_settings('Privilege Rights').map { |k, v|
