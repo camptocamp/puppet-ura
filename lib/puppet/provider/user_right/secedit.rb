@@ -14,11 +14,47 @@ Puppet::Type.type(:user_right).provide(:secedit) do
     end
 
     def create
-        # Same as modify, just create the file and flush
+        write_export(@parameters[:name], @parameters[:sid])
+        @property_hash[:ensure] = :present
     end
 
     def destroy
-        # Same as modify, SID is empty
+        write_export(@parameters[:name], [])
+        @property_hash[:ensure] = :absent
+    end
+
+    def sid
+        @property_hash[:sid]
+    end
+
+    def sid=(value)
+        write_export(@parameters[:name], value)
+        @property_hash[:sid] = value
+    end
+
+    def in_file_path(right)
+        File.join(Puppet[:vardir], 'secedit_export', "#{right}.txt")
+    end
+
+    def write_export(right, sid)
+        dir = File.join(Puppet[:vardir], 'secedit_export')
+        Dir.mkdir(dir) unless Dir.exist?(dir)
+
+        File.open(in_file_path(right), 'rw') do |f|
+          f.write <<-EOF
+[Unicode]
+Unicode=yes
+[Privilege Rights]
+#{right} = #{sid.join(',')}
+[Version]
+signature="$CHICAGO$"
+Revision=1
+          EOF
+        end
+    end
+
+    def flush
+        secedit('/configure', '/db', 'secedit.sdb', '/cfg', in_file_path(@parameters[:name]))
     end
 
     def sid_in_sync?(current, should)
