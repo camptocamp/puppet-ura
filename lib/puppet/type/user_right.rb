@@ -13,7 +13,7 @@ Puppet::Type.newtype(:user_right) do
         desc 'The user right name'
 
         validate do |value|
-            fail "Invalid right name #{value}" unless value =~ /^[A-Za-z]+$/
+            fail "Not a valid name: '#{value}'" unless value =~ /^[A-Za-z]+$/
         end
 
         munge do |value|
