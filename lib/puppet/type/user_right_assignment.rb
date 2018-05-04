@@ -9,6 +9,14 @@ Puppet::Type.newtype(:user_right_assignment) do
 
     newparam(:right) do
         desc 'The right to append users to'
+
+        validate do |value|
+            fail "Invalid right name #{value}" unless value =~ /^[A-Za-z]+$/
+        end
+
+        munge do |value|
+            value.downcase
+        end
     end
 
     newparam(:sid) do

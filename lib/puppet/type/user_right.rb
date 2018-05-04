@@ -11,6 +11,14 @@ Puppet::Type.newtype(:user_right) do
 
     newparam(:name, :namevar => true) do
         desc 'The user right name'
+
+        validate do |value|
+            fail "Invalid right name #{value}" unless value =~ /^[A-Za-z]+$/
+        end
+
+        munge do |value|
+            value.downcase
+        end
     end
 
     newproperty(:sid, :array_matching => :all) do
