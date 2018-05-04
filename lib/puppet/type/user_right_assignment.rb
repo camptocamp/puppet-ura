@@ -11,7 +11,7 @@ Puppet::Type.newtype(:user_right_assignment) do
         desc 'The right to append users to'
 
         validate do |value|
-            fail "Invalid right name #{value}" unless value =~ /^[A-Za-z]+$/
+            fail "Not a valid right name: '#{value}'" unless value =~ /^[A-Za-z]+$/
         end
 
         munge do |value|
