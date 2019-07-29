@@ -4,7 +4,7 @@ begin
   require File.expand_path('../../../util/ini_file', __FILE__)
 rescue LoadError
   # in case we're not in libdir
-  require File.expand_path('../../../../../spec/fixtures/modules/inifile/lib/puppet/util/ini_file', __FILE__)
+  # require File.expand_path('../../../../../spec/fixtures/modules/inifile/lib/puppet/util/ini_file', __FILE__)
 end
 
 Puppet::Type.type(:user_right).provide(:secedit) do
