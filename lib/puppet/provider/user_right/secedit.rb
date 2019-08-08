@@ -94,7 +94,21 @@ Revision=1
             new({
                 :name   => k,
                 :ensure => :present,
-                :sid    => v.split(','),
+                :sid    => v.split(',').map { |user| 
+                  # We need to get a bit funky as sometimes secedit will return a textual name rather than the SID
+                  # If so, we then look up the SID, even prefixing it with the hostname if it helps.
+                  # In particular, this was required when the administrator account was renamed and the new name
+                  # was returned as a name rather than SID from secedit.
+                  if user.to_s =~ /^\*?s-/i
+                    user
+                  else
+                    sid = Puppet::Util::Windows::SID.name_to_sid(user)
+                    if sid.nil?
+                      sid = Puppet::Util::Windows::SID.name_to_sid(Socket.gethostname + "\\" + user)
+                    end
+                    '*' + sid
+                  end
+                },
             })
         }
     end
