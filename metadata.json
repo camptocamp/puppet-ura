@@ -8,6 +8,10 @@
   "project_page": "https://github.com/camptocamp/puppet-ura",
   "issues_url": "https://github.com/camptocamp/puppet-ura/issues",
   "dependencies": [
+    {
+      "name": "local_security_policy",
+      "version_requirement": ">= 0.6.0 <1.0.0"
+    }
   ],
   "operatingsystem_support": [
     {

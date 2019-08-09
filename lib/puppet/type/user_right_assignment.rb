@@ -11,10 +11,20 @@ Puppet::Type.newtype(:user_right_assignment) do
         desc 'The right to append users to'
 
         validate do |value|
-            fail "Not a valid right name: '#{value}'" unless value =~ /^[A-Za-z]+$/
+            unless SecurityPolicy.valid_lsp?(value) or SecurityPolicy.find_mapping_from_policy_name(value)
+                raise ArgumentError, "Invalid Policy name: #{value}"
+            end
         end
 
         munge do |value|
+            if value.to_s =~ /\s+/
+                begin
+                    policy_hash = SecurityPolicy.find_mapping_from_policy_desc(value)
+                    value = policy_hash[:name]
+                rescue KeyError => e
+                    fail(e.message)
+                end
+            end
             value.downcase
         end
     end
